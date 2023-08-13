@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"go-server-part3/internal/entities"
+	"go-server-part3/internal/models"
 	"go-server-part3/internal/repositories"
 )
 
@@ -33,4 +34,9 @@ func (uc *UserUseCase) UpdateUser(user *entities.User) error {
 
 func (uc *UserUseCase) DeleteUser(userID uint) error {
 	return uc.userRepository.Delete(userID)
+}
+
+func (uc *UserUseCase) SearchUsers(request models.SearchRequest) ([]*entities.User, error) {
+	// Gọi hàm từ repository để thực hiện tìm kiếm và lọc người dùng
+	return uc.userRepository.Search(request)
 }

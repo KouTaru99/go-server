@@ -22,4 +22,5 @@ func (ur *UserRoutes) RegisterRoutes(e *echo.Echo) {
 	userGroup.GET("/:id", ur.userHandler.GetUser)
 	userGroup.PUT("/:id", ur.userHandler.UpdateUser)
 	userGroup.DELETE("/:id", ur.userHandler.DeleteUser)
+	userGroup.POST("/search", ur.userHandler.SearchUser)
 }

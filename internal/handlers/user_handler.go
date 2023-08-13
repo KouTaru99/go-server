@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"go-server-part3/internal/models"
 	"go-server-part3/internal/usecases"
 	"net/http"
 	"strconv"
@@ -101,4 +102,25 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 	}
 
 	return c.NoContent(http.StatusNoContent)
+}
+
+func (h *UserHandler) SearchUser(c echo.Context) error {
+	var request models.SearchRequest
+	if err := c.Bind(&request); err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid input")
+	}
+
+	// Xử lý các giá trị mặc định
+	if request.Page <= 0 {
+		request.Page = 1
+	}
+	if request.PageSize <= 0 {
+		request.PageSize = 10
+	}
+
+	users, err := h.userUseCase.SearchUsers(request)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, "Error searching users")
+	}
+	return c.JSON(http.StatusOK, users)
 }
