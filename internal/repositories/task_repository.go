@@ -17,9 +17,18 @@ type taskRepository struct {
 	db *gorm.DB
 }
 
-// Create implements TaskRepository.
-func (*taskRepository) Create(task *entities.Task) (*entities.Task, error) {
-	panic("unimplemented")
+func NewTaskRepository(db *gorm.DB) TaskRepository {
+	return &taskRepository{
+		db: db,
+	}
+}
+
+func (r *taskRepository) Create(task *entities.Task) (*entities.Task, error) {
+	result := r.db.Create(task)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return task, nil
 }
 
 // Delete implements TaskRepository.
@@ -35,10 +44,4 @@ func (*taskRepository) GetByID(taskID uint) (*entities.Task, error) {
 // Update implements TaskRepository.
 func (*taskRepository) Update(task *entities.Task) error {
 	panic("unimplemented")
-}
-
-func NewTaskRepository(db *gorm.DB) TaskRepository {
-	return &taskRepository{
-		db: db,
-	}
 }

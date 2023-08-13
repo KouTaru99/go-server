@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"go-server-part3/internal/entities"
 	"go-server-part3/internal/usecases"
 	"net/http"
 
@@ -18,9 +19,17 @@ func NewTaskHandler(taskUseCase *usecases.TaskUseCase) *TaskHandler {
 }
 
 func (h *TaskHandler) Create(c echo.Context) error {
-	var task = 123
+	var input entities.Task
+	if err := c.Bind(&input); err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid input")
+	}
 
-	return c.JSON(http.StatusCreated, task)
+	task, err := h.taskUseCase.CreateTask(input.TaskName, input.Title, input.Description, input.Status, input.Priority)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, "Error creating task")
+	}
+
+	return c.JSON(http.StatusCreated, task.ID)
 }
 
 func (h *TaskHandler) Get(c echo.Context) error {
